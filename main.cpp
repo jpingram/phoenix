@@ -22,7 +22,7 @@
 
 int main(){
     //create window and window related objects
-    sf::RenderWindow window(sf::VideoMode(600, 400), "Alpha 2.2");
+    sf::RenderWindow window(sf::VideoMode(600, 400), "Alpha 2.3");
 
     //set Max Frame Rate to the FERAMERATE_CAP macro
     window.setFramerateLimit(FRAMERATE_CAP);

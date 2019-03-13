@@ -33,4 +33,6 @@ extern unsigned short deckOne[];
 
 extern unsigned short deckTwo[];
 
+extern unsigned short deckThree[];
+
 #endif // DECK

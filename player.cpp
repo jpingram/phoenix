@@ -1,4 +1,5 @@
 #include <string>
+#include <math.h>
 #include "card.h"
 #include "deck.h"
 #include "act.h"
@@ -6,21 +7,21 @@
 #include "player.h"
 
 Player::Player():deck(emptyDeck), status(Statuses::standby), eventCounter(0), eventTimeLimit(0),
-    stunCounter(0), recoilCounter(0), currentFocusStage(1), focusProgress(0), reloadCount(0),
+    stunScale(DEFAULT_STUN_SCALE), stunCounter(0), recoilCounter(0), currentFocusStage(1), focusProgress(0), reloadCount(0),
     maxHP(DEFAULT_PLAYER_HP), HP(DEFAULT_PLAYER_HP), dex(20), xSpeed(PLAYER_BASE_X_SPEED), ySpeed(PLAYER_BASE_Y_SPEED),
     xDir(Directions::right), hitbox(DEFAULT_PLAYER_X, DEFAULT_PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT),
     lowHitbox(DEFAULT_PLAYER_X, DEFAULT_PLAYER_Y+PLAYER_HEIGHT/2, PLAYER_WIDTH, PLAYER_HEIGHT/2), actions(){
 };
 
-Player::Player(unsigned short* s):deck(s), status(Statuses::standby), eventCounter(0),
-    eventTimeLimit(0), stunCounter(0), recoilCounter(0), currentFocusStage(1), focusProgress(0), reloadCount(0),
+Player::Player(unsigned short* s):deck(s), status(Statuses::standby), eventCounter(0), eventTimeLimit(0),
+    stunScale(DEFAULT_STUN_SCALE), stunCounter(0), recoilCounter(0), currentFocusStage(1), focusProgress(0), reloadCount(0),
     maxHP(DEFAULT_PLAYER_HP), HP(DEFAULT_PLAYER_HP), dex(20), xSpeed(PLAYER_BASE_X_SPEED), ySpeed(PLAYER_BASE_Y_SPEED),
     xDir(Directions::right), hitbox(DEFAULT_PLAYER_X, DEFAULT_PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT),
     lowHitbox(DEFAULT_PLAYER_X, DEFAULT_PLAYER_Y+PLAYER_HEIGHT/2, PLAYER_WIDTH, PLAYER_HEIGHT/2), actions(){
 };
 
-Player::Player(unsigned short* s, short x, short y):deck(s), status(Statuses::standby), eventCounter(0),
-    eventTimeLimit(0), stunCounter(0), recoilCounter(0), currentFocusStage(1), focusProgress(0), reloadCount(0),
+Player::Player(unsigned short* s, short x, short y):deck(s), status(Statuses::standby), eventCounter(0), eventTimeLimit(0),
+    stunScale(DEFAULT_STUN_SCALE), stunCounter(0), recoilCounter(0), currentFocusStage(1), focusProgress(0), reloadCount(0),
     maxHP(DEFAULT_PLAYER_HP), HP(DEFAULT_PLAYER_HP), dex(20), xSpeed(PLAYER_BASE_X_SPEED), ySpeed(PLAYER_BASE_Y_SPEED),
     xDir(Directions::right), hitbox(x, y, PLAYER_WIDTH, PLAYER_HEIGHT),
     lowHitbox(x, y+PLAYER_HEIGHT/2, PLAYER_WIDTH, PLAYER_HEIGHT/2), actions(){
@@ -122,8 +123,21 @@ void Player::setStatus(unsigned short s){
             eventTimeLimit = THROW_SPEED;
             break;
         case Statuses::acting:
+            //if acting, break player out of recoil/recoil animation
             recoilCounter = 0;
-            eventTimeLimit = TEST_CAST_TIME;
+
+            //should never reach here with out having an active act
+            //      need to be safe in case of errors, tho
+            //check for active act, if there is one,
+            //      update the act's hitbox
+            //      set timer to the act's duration
+            // else, set to zero for the act to be shut down immediately
+            if(!actions.empty()){
+                actions.front().setHitbox(hitbox.getX(), hitbox.getY(), hitbox.getW(), hitbox.getH());
+                eventTimeLimit = actions.front().getDuration();
+            }else{
+                eventTimeLimit = 0;
+            }
             break;
     }
 
@@ -236,7 +250,8 @@ unsigned short Player::getReloadCount(){
 };
 
 void Player::stun(){
-    stunCounter = DEFAULT_STUN_TIME;
+    stunCounter = (unsigned short)(floor(BASE_STUN_TIME*stunScale));
+    stunScale = 1.0;
 };
 
 bool Player::isStunned(){
@@ -244,6 +259,7 @@ bool Player::isStunned(){
 };
 
 void Player::recoil(){
+    stunCounter = 0;
     recoilCounter = DEFAULT_RECOIL_TIME;
 };
 
@@ -279,10 +295,10 @@ void Player::act(){
 void Player::setAction(Card *c){
     //calculate POWER
     unsigned short power = DEFAULT_POWER_SCALE;
-
     //create new act
     Act newAct(c->getCateg(), c->getType(), c->getValue(), c->getName(), power, xDir);
-    newAct.setHitbox(hitbox.getX(), hitbox.getY(), hitbox.getW(), hitbox.getH());
+    //newAct.setHitbox(hitbox.getX(), hitbox.getY(), hitbox.getW(), hitbox.getH());
+    stunScale = newAct.getRecovery();
 
     //add to actions
     actions.push_back(newAct);
@@ -292,7 +308,8 @@ void Player::setAction(Card *c){
 void Player::setAction(unsigned short c, unsigned short t, unsigned short v, std::string n, float p, short d){
     //create new act
     Act newAct(c, t, v, n, p, d);
-    newAct.setHitbox(hitbox.getX(), hitbox.getY(), hitbox.getW(), hitbox.getH());
+    //newAct.setHitbox(hitbox.getX(), hitbox.getY(), hitbox.getW(), hitbox.getH());
+    stunScale = newAct.getRecovery();
 
     //add to actions
     actions.push_back(newAct);

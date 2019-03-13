@@ -1,39 +1,39 @@
 # depslib dependency file v1.0
-1546040524 source:c:\users\cookie cat\documents\phoenix\card.cpp
+1552438090 source:c:\users\cookie cat\documents\phoenix\card.cpp
 	<sstream>
 	<string>
 	"card.h"
 
 1544906304 source:c:\users\cookie cat\documents\phoenix\dicks.cpp
 
-1552028248 source:c:\users\cookie cat\documents\phoenix\main.cpp
+1552037291 source:c:\users\cookie cat\documents\phoenix\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
-	"card.h"
 	"battleview.h"
 
-1551757980 c:\users\cookie cat\documents\phoenix\card.h
+1552428139 c:\users\cookie cat\documents\phoenix\card.h
 	<string>
 
-1552026024 source:c:\users\cookie cat\documents\phoenix\deck.cpp
+1552437827 source:c:\users\cookie cat\documents\phoenix\deck.cpp
 	<iostream>
 	<vector>
 	"card.h"
 	"deck.h"
 
-1552026039 c:\users\cookie cat\documents\phoenix\deck.h
+1552437862 c:\users\cookie cat\documents\phoenix\deck.h
 	<vector>
 	"card.h"
 
-1552037045 source:c:\users\cookie cat\documents\phoenix\player.cpp
+1552451593 source:c:\users\cookie cat\documents\phoenix\player.cpp
 	<string>
+	<math.h>
 	"card.h"
 	"deck.h"
 	"act.h"
 	"rect.h"
 	"player.h"
 
-1552024324 c:\users\cookie cat\documents\phoenix\player.h
+1552438744 c:\users\cookie cat\documents\phoenix\player.h
 	"card.h"
 	"deck.h"
 	"act.h"
@@ -45,7 +45,7 @@
 	<SFML/Graphics/Color.hpp>
 	"data.h"
 
-1552034741 source:c:\users\cookie cat\documents\phoenix\battleview.cpp
+1552450251 source:c:\users\cookie cat\documents\phoenix\battleview.cpp
 	<iostream>
 	<vector>
 	<string>
@@ -74,11 +74,11 @@
 1551486720 c:\users\cookie cat\documents\phoenix\data.h
 	<SFML/Graphics/Color.hpp>
 
-1551939045 c:\users\cookie cat\documents\phoenix\act.h
+1552443096 c:\users\cookie cat\documents\phoenix\act.h
 	<string>
 	"rect.h"
 
-1552025212 source:c:\users\cookie cat\documents\phoenix\act.cpp
+1552438372 source:c:\users\cookie cat\documents\phoenix\act.cpp
 	<string>
 	<math.h>
 	"act.h"

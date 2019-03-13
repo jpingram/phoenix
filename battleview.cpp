@@ -13,7 +13,7 @@
 #include "data.h"
 #include "battleview.h"
 
-BattleView::BattleView():p1(deckTwo), p2(deckOne), debugTextObjects(), debugRectObjects(),
+BattleView::BattleView():p1(deckTwo), p2(deckThree), debugTextObjects(), debugRectObjects(),
         debugSetting(true), castSwitch(castStatuses::na){
     //set p2 to default position and x direction
     p2.moveRight(DEFAULT_PLAYER_TWO_X_OFFSET);
@@ -106,13 +106,15 @@ void BattleView::enterInput(Player& p, char c){
             break;
         case 'c': //SPACE pressed
             //if it is legal to update cast, update cast
-            if(p.getStatus() != Statuses::reloading && p.getStatus() != Statuses::acting && !p.isStunned() && !p.isInRecoil()){
+            if(p.getStatus() != Statuses::reloading && p.getStatus() != Statuses::throwing && p.getStatus() != Statuses::acting
+                    && !p.isStunned() && !p.isInRecoil()){
                 p.act();
             }
             break;
         case 'v': //SPACE held
             //if it is legal to update cast for reloading, update cast
-            if(p.getStatus() != Statuses::reloading && p.getStatus() != Statuses::acting && !p.isStunned() && !p.isInRecoil()){
+            if(p.getStatus() != Statuses::reloading && p.getStatus() != Statuses::throwing && p.getStatus() != Statuses::acting
+                    && !p.isStunned() && !p.isInRecoil()){
                 if(p.getStatus() == Statuses::focusing || p.getStatus() == Statuses::focusing2 ||
                 p.getStatus() == Statuses::focusing3 || p.getStatus() == Statuses::focused){
                     p.act();
@@ -202,7 +204,9 @@ void BattleView::updateCast(){
             if(p2.getStatus() == Statuses::acting){
                 if(p2.getCurrentAct()->getValue() > cast->getValue() || p2.getCurrentAct()->getValue() == 0){ //CARD BREAK
                     cast->setStatus(actStatuses::failed);
-                    p1.stun();
+                    if(!p1.isStunned()){
+                        p1.stun();
+                    }
                 }else //DOUBLE FAIL
                 if(p2.getCurrentAct()->getValue() == cast->getValue()){
                     cast->setStatus(actStatuses::failed);
@@ -228,7 +232,9 @@ void BattleView::updateCast(){
             if(p1.getStatus() == Statuses::acting){
                 if(p1.getCurrentAct()->getValue() > cast->getValue() || p1.getCurrentAct()->getValue() == 0){ //CARD BREAK
                     cast->setStatus(actStatuses::failed);
-                    p2.stun();
+                    if(!p2.isStunned()){
+                        p2.stun();
+                    }
                 }else //DOUBLE FAIL
                 if(p1.getCurrentAct()->getValue() == cast->getValue()){
                     cast->setStatus(actStatuses::failed);
@@ -398,7 +404,7 @@ void BattleView::createDebugObjects(){
     sf::Text p2StunCounter;
     p2StunCounter.setFont(freeroadR);
     p2StunCounter.setCharacterSize(15);
-    p2EventLimitText.setPosition(DEBUG_X_ZERO_POINT + DEBUG_P2_OFFSET, DEBUG_Y_ZERO_POINT + 10*DEBUG_LINE_SPACING);
+    p2StunCounter.setPosition(DEBUG_X_ZERO_POINT + DEBUG_P2_OFFSET, DEBUG_Y_ZERO_POINT + 10*DEBUG_LINE_SPACING);
     debugTextObjects.push_back(p2StunCounter);
 
     //debugTextObjects[18]
@@ -538,7 +544,9 @@ void BattleView::updateDebugObjects(){
     //display STUNNED if the stun status is active for p1
     debugTextObjects[8].setString("");
     if(p1.isStunned()){
-        debugTextObjects[8].setString("STUNNED");
+        ss.str(std::string());
+        ss << "STUNNED(" << p1.getStunCounter() << ")";
+        debugTextObjects[8].setString(ss.str());
     }
 
     //display RECOIL if the recoil status is active for p1
@@ -629,7 +637,9 @@ void BattleView::updateDebugObjects(){
     //display STUNNED if the stun status is active for p2
     debugTextObjects[17].setString("");
     if(p2.isStunned()){
-        debugTextObjects[17].setString("STUNNED");
+        ss.str(std::string());
+        ss << "STUNNED(" << p2.getStunCounter() << ")";
+        debugTextObjects[17].setString(ss.str());
     }
 
     //display RECOIL if the recoil status is active for p1

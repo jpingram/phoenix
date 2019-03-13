@@ -3,11 +3,13 @@
 #ifndef CARD
 #define CARD
 
-enum Category {reload, test};
+enum Category {reload, test, chi};
 enum TType {zero, one, two, three, four, five, six, seven, eight, nine};
+enum CType {gold, mercury, copper, silver, iron, tin, lead};
 
 #define RELOAD_CAT_SIZE 1
 #define TEST_CAT_SIZE 10
+#define CHI_CAT_SIZE 7
 
 class Card{
 private:

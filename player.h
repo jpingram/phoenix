@@ -13,16 +13,16 @@ enum Directions{left=-1, right=1};
 
 #define FOCUS_TIME_LIMIT 100
 #define RELOAD_TIME_LIMIT 12
-#define DEFAULT_STUN_TIME 50
+#define DEFAULT_STUN_SCALE 1.0
+#define BASE_STUN_TIME 100
 #define DEFAULT_RECOIL_TIME 50
 #define THROW_SPEED 10
 
-#define TEST_CAST_TIME 60
 #define DEFAULT_POWER_SCALE 1.0
 
 #define PLAYER_HEIGHT 40
 #define PLAYER_WIDTH 20
-#define DEFAULT_PLAYER_HP 10.0
+#define DEFAULT_PLAYER_HP 100.0
 #define DEFAULT_PLAYER_X 100
 #define DEFAULT_PLAYER_TWO_X_OFFSET 100
 #define DEFAULT_PLAYER_Y 250
@@ -36,6 +36,7 @@ private:
 
     unsigned short eventCounter;
     unsigned short eventTimeLimit; //set on a case by case basis
+    float stunScale; //used internally, used to hold scale at which stun counter is set
     unsigned short stunCounter; //used to track stun time
     unsigned short recoilCounter; //used to track recoil time
 

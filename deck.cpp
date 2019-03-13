@@ -143,3 +143,22 @@ unsigned short deckTwo[]  =
     1, 0, 2,
     1, 0, 1,
     1, 0, 0};
+
+//sample test deck for use with Deck(), primarily tests chi magic attacks
+unsigned short deckThree[]  =
+    {15,
+    2, 0, 9,
+    2, 1, 7,
+    2, 2, 5,
+    2, 3, 3,
+    2, 4, 1,
+    2, 5, 8,
+    2, 6, 6,
+    2, 0, 5,
+    2, 1, 3,
+    2, 2, 2,
+    2, 3, 3,
+    2, 4, 0,
+    2, 5, 0,
+    2, 6, 0,
+    1, 0, 0};

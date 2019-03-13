@@ -10,7 +10,7 @@ Act::Act():categ(1), type(1), value(1), name("ONE"), powerScale(1.0), xDir(1), s
             setStats();
         }; //default: makes an act of a "ONE" card with a power of 1
 Act::Act(unsigned short c, unsigned short t, unsigned short v, std::string n, float p, short d)
-        :categ(c), type(t), value(v), name(n), powerScale(1.0), xDir(d), status(actStatuses::active),
+        :categ(c), type(t), value(v), name(n), powerScale(p), xDir(d), status(actStatuses::active),
         hitbox(), power(), duration(), reach(), recovery(), xSpeed(), ySpeed(),
         actEventTimer(0), hazardTimeCue(0){
             setStats();
@@ -44,6 +44,7 @@ void Act::setStatus(unsigned short s){
     status = s;
 };
 
+//sets hitbox location based on act type and x & y origin coordinates as well as width and height input
 void Act::setHitbox(short xOrigin, short yOrigin, short width, short height){
     switch(categ){
         case Category::test:
@@ -68,6 +69,14 @@ void Act::setHitbox(short xOrigin, short yOrigin, short width, short height){
             hitbox.setH(TEST_HITBOX_HEIGHT);
             break;
         }
+        case Category::chi:
+        {
+            hitbox.setX(CHI_X_ORIGIN);
+            hitbox.setY(CHI_Y_ORIGIN);
+            hitbox.setW(CHI_HITBOX_WIDTH);
+            hitbox.setH(CHI_HITBOX_HEIGHT);
+            break;
+        }
         default:
         {
             //just for error contingency purposes
@@ -77,6 +86,11 @@ void Act::setHitbox(short xOrigin, short yOrigin, short width, short height){
             hitbox.setW(10);
             break;
         }
+    }
+
+    //if the act is using facing left, set starting x coordinate one "width length" away from current position
+    if(xDir == -1){
+        hitbox.moveLeft(hitbox.getW());
     }
 };
 
@@ -90,7 +104,7 @@ void Act::setStats(){
         case Category::test:
             //all test cards have the same stats
             power = TEST_DEFAULT_POWER;
-            duration = 1.0;
+            duration = TEST_CAST_TIME;
             reach = 1.0;
             recovery = 1.0;
 
@@ -99,6 +113,61 @@ void Act::setStats(){
 
             hazardTimeCue = TEST_HAZARD_TIME;
             break;
+        case Category::chi:
+        {
+            switch(type){
+                case CType::gold:
+                    power = CHI_POWER_A;
+                    duration = CHI_DURATION_B;
+                    reach = CHI_REACH_A;
+                    recovery = CHI_RECOVERY_A;
+                    break;
+                case CType::mercury:
+                    power = CHI_POWER_D;
+                    duration = CHI_DURATION_S;
+                    reach = CHI_REACH_C;
+                    recovery = CHI_RECOVERY_C;
+                    break;
+                case CType::copper:
+                    power = CHI_POWER_C;
+                    duration = CHI_DURATION_C;
+                    reach = CHI_REACH_C;
+                    recovery = CHI_RECOVERY_C;
+                    break;
+                case CType::silver:
+                    power = CHI_POWER_A;
+                    duration = CHI_DURATION_B;
+                    reach = CHI_REACH_B;
+                    recovery = CHI_RECOVERY_B;
+                    break;
+                case CType::iron:
+                    power = CHI_POWER_S;
+                    duration = CHI_DURATION_D;
+                    reach = CHI_REACH_B;
+                    recovery = CHI_RECOVERY_C;
+                    break;
+                case CType::tin:
+                    power = CHI_POWER_C;
+                    duration = CHI_DURATION_D;
+                    reach = CHI_REACH_S;
+                    recovery = CHI_RECOVERY_B;
+                    break;
+                case CType::lead:
+                    power = CHI_POWER_C;
+                    duration = CHI_DURATION_D;
+                    reach = CHI_REACH_C;
+                    recovery = CHI_RECOVERY_S;
+                    break;
+            }
+            duration *= CHI_BASE_DURATION;
+
+            //chi attack hit-boxes do not move
+            xSpeed = 0.0;
+            ySpeed = 0.0;
+
+            hazardTimeCue = duration*CHI_HAZARD_CUE_SCALE;
+            break;
+        }
         default:
             //added just for error contingency purposes
             power = 1.0;

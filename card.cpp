@@ -35,6 +35,9 @@ std::string getNameFromList(unsigned short c, unsigned short t, unsigned short v
     if(c > 1){
         id += TEST_CAT_SIZE;
     }
+    if(c > 2){
+        id += CHI_CAT_SIZE;
+    }
     std::stringstream s;
 
     switch(id){
@@ -49,9 +52,16 @@ std::string getNameFromList(unsigned short c, unsigned short t, unsigned short v
         case 8: s << "SEVEN"; break;
         case 9: s << "EIGHT"; break;
         case 10: s << "NINE"; break;
+        case 11: s << "Au SIGN"; break;
+        case 12: s << "HG SIGN"; break;
+        case 13: s << "Cu SIGN"; break;
+        case 14: s << "Ag SIGN"; break;
+        case 15: s << "Fe SIGN"; break;
+        case 16: s << "Sn SIGN"; break;
+        case 17: s << "Pb SIGN"; break;
     }
 
-    if(id >= 0 && id <= 10){
+    if(id >= 0 && id <= 17){
 
         s << "(" << v << ")";
         return s.str();
